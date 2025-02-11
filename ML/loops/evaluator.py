@@ -1,7 +1,7 @@
 import torch
 
 from callbacks import CallbackCollection
-from utils import DataKey, EvaluatorState, StoreKey
+from utils.state import DataKey, EvaluatorState, StoreKey
 
 
 class Evaluator:
