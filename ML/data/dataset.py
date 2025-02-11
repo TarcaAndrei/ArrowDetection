@@ -14,8 +14,8 @@ class ArrowDataset(Dataset):
     Dataset class for a generic CSV dataset.
     """
 
-    def __init__(self, annotation_file: str, root_dir_json: str, classes: list, stage_column: str, *,
-                 data_type: str = "train", transforms: v2.Compose, subset_dim: int | None = None):
+    def __init__(self, annotation_file: str, root_dir_json: str, classes: list,
+                 transforms: v2.Compose, data_type: str = "train", subset_dim: int | None = None):
         """
         Initializes the dataset for object detection of non-arrow objects.
 
@@ -23,7 +23,6 @@ class ArrowDataset(Dataset):
             annotation_file: Full path to the .csv file listing all the JSON files.
             classes: list of labels corresponding to the classes.
             sep: Separator for CSV file.
-            stage_column: Name of the stage column.
             data_type: Dataset type, one of ('train', 'val', 'test').
             transforms: Transform applied to the image; if None, standard normalization is applied.
             subset_dim: If set to a number, uses a subset of the entire dataset.
@@ -36,7 +35,7 @@ class ArrowDataset(Dataset):
 
         if data_type not in ('train', 'val', 'test'):
             raise ValueError("Dataset type is not one of train, val, test!")
-        all_entities = all_data[all_data[stage_column]
+        all_entities = all_data[all_data["type"]
                                 == data_type].reset_index()
         if subset_dim is not None:
             all_entities = all_entities[:subset_dim]

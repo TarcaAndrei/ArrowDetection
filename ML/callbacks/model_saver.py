@@ -5,7 +5,7 @@ from pathlib import Path
 import torch
 
 from callbacks.base_callbacks import CallbackWithOutput
-from utils import TrainerState
+from utils.state import TrainerState
 
 logger = logging.getLogger(__name__)
 

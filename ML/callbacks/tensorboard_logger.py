@@ -7,7 +7,7 @@ from collections import defaultdict
 from torch.utils.tensorboard import SummaryWriter
 
 from callbacks.base_callbacks import CallbackWithOutput
-from utils import TrainerState
+from utils.state import TrainerState
 
 logger = logging.getLogger(__name__)
 

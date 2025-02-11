@@ -1,4 +1,4 @@
-from .base_callbacks import CallbackBatchWithFrequencyDecorator, CallbackCollection, CallbackWithOutput
+from .base_callbacks import CallbackCollection, CallbackWithOutput
 from .epoch_logger import EpochLogger
 from .loss_logger import LossLogger
 from .metric_logger import ObjectDetectionMAPLogger

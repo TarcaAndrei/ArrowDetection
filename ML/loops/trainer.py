@@ -3,7 +3,7 @@ from __future__ import annotations
 import torch
 
 from callbacks import CallbackCollection
-from utils import DataKey, StoreKey, TrainerState
+from utils.state import DataKey, StoreKey, TrainerState
 
 from .evaluator import Evaluator
 
