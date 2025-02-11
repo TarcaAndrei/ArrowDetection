@@ -48,5 +48,5 @@ class TrainRunnerResnet(BaseRunner):
 
 
 if __name__ == "__main__":
-    full_trainer = TrainRunnerResnet(distributed=True)
+    full_trainer = TrainRunnerResnet(distributed=True, output_dir="<path_to_experiment>")
     full_trainer()
