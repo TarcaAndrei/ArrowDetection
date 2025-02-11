@@ -9,7 +9,7 @@ import torch
 
 from callbacks.tensorboard_logger import TensorboardLogger
 from metrics import ObjectDetectionMAPWrapper
-from utils import DataKey, EvaluatorState, StoreKey, TrainerState
+from utils.state import DataKey, EvaluatorState, StoreKey, TrainerState
 
 
 class ObjectDetectionMAPLogger(TensorboardLogger):

@@ -1,7 +1,7 @@
 import logging
 
 from callbacks.base_callbacks import Callback
-from utils import TrainerState
+from utils.state import TrainerState
 
 logger = logging.getLogger(__name__)
 

@@ -3,7 +3,7 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
-from utils import EvaluatorState, TrainerState
+from utils.state import EvaluatorState, TrainerState
 
 
 class Callback:
@@ -47,64 +47,6 @@ class CallbackWithOutput(Callback):
     def __init__(self, output_dir: str | Path):
         self.output_dir = Path(output_dir)
         os.makedirs(self.output_dir, exist_ok=True)
-
-
-class CallbackDecorator(Callback):
-    """
-    Decorator class for callbacks
-    """
-    def __init__(
-        self,
-        base_callback: Callback,
-    ):
-        """
-        Initialize the wrapped callback.
-
-        Args:
-            base_callback: callback to be wrapped
-        """
-        self.base_callback = base_callback
-
-
-class CallbackBatchWithFrequencyDecorator(CallbackDecorator):
-    """
-    Base class for callbacks that are called during training and evaluation with a given frequency.
-    """
-
-    def __init__(
-        self, *,
-        on_train_batch_frequency: int = 1,
-        on_evaluation_batch_frequency: int = 1,
-        base_callback: Callback,
-    ):
-        """
-        Set calling frequencies for the *_batch_* methods to the requested frequency.
-
-        Args:
-            on_train_batch_frequency: How many iterations are between two calls of the on_train_batch_* methods
-            on_evaluation_batch_frequency: How many iterations are between two calls of the 
-                                           on_evaluation_batch_* methods
-            base_callback: callback to be wrapped
-        """
-        super().__init__(base_callback)
-        self.on_train_batch_frequency = on_train_batch_frequency
-        self.on_evaluation_batch_frequency = on_evaluation_batch_frequency
-
-    def on_train_batch_begin(self, state: TrainerState) -> None:
-        if state.iteration % self.on_train_batch_frequency == 0:
-            self.base_callback.on_train_batch_begin(state)
-
-    def on_train_batch_end(self, state: TrainerState) -> None:
-        if state.iteration % self.on_train_batch_frequency == 0:
-            self.base_callback.on_train_batch_end(state)
-
-    def on_evaluation_batch_begin(self, state: EvaluatorState) -> None:
-        if state.iteration % self.on_evaluation_batch_frequency == 0:
-            self.base_callback.on_evaluation_batch_begin(state)
-
-    def on_evaluation_batch_end(self, state: EvaluatorState) -> None:
-        if state.iteration % self.on_evaluation_batch_frequency == 0:
-            self.base_callback.on_evaluation_batch_end(state)
 
 
 class CallbackCollection(Callback):

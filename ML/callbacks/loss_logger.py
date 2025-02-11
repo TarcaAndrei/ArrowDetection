@@ -5,7 +5,7 @@ from collections import defaultdict
 import numpy as np
 
 from callbacks.tensorboard_logger import TensorboardLogger
-from utils import EvaluatorState, StoreKey, TrainerState
+from utils.state import EvaluatorState, StoreKey, TrainerState
 
 
 class LossLogger(TensorboardLogger):
