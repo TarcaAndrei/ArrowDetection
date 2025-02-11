@@ -72,18 +72,3 @@ class ObjectDetectionTransformation(nn.Module):
                 "bbox": coord.tolist()
             })
         return img_transformed, final_labels
-
-
-def build_augmentation(config: ListConfig | DictConfig) -> ObjectDetectionAugmentation:
-    """
-    Args:
-        config: the config with the image desired dimensions
-    Returns:
-        the augmentations
-    """
-
-    custom_augmentation = ObjectDetectionAugmentation(
-        (config.image_size.img_height, config.image_size.img_width))
-    return v2.Compose([
-        custom_augmentation,
-    ])
