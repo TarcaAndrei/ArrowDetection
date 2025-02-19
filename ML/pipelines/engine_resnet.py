@@ -25,6 +25,7 @@ class TrainRunnerResnet(BaseRunner):
                                        normalize_before=True,
                                        return_intermediate_dec=False)
         head = DETR(
+            num_classes=10,
             num_channels=2048,
             transformer=detr_transformer,
             num_queries=40,
