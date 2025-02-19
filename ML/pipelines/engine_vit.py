@@ -18,7 +18,7 @@ class TrainRunnerVit(BaseRunner):
             patch_size=14,
             pretrained_weights='/weights/dinov2_vits14_pretrain_ok.pth',  # vit small
             init_values=1e-5,
-            img_size = (1666, 518)
+            img_size=(518, 1666)
         )
         detr_transformer = Transformer(d_model=384,
                                        dropout=0.2,
@@ -34,6 +34,8 @@ class TrainRunnerVit(BaseRunner):
             num_queries=40,
             aux_loss=False,
             patch_size=14,
+            initial_height=518,
+            initial_width=1666,
         )
         full_model = SingleTaskModel(
             backbone=backbone_vit, head=head, freeze_backbone=True)
