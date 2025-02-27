@@ -7,20 +7,20 @@ import cv2
 from pathlib import Path
 
 label_decoder = {
-    0: 'Straight Right',
-    1: 'Straight Left',
-    2: 'Straight',
-    3: 'Straight Left Right',
-    4: 'Slight Right',
-    5: 'Slight Left',
-    6: 'Right',
-    7: 'Left Right',
-    8: 'Left',
-    9: 'Turn Around'
+    0: 'Turn Around',
+    1: 'Left',
+    2: 'Left Right',
+    3: 'Right',
+    4: 'Slight Left',
+    5: 'Slight Right',
+    6: 'Straight Left Right',
+    7: 'Straight',
+    8: 'Straight Left',
+    9: 'Straight Right',
 }
 
 
-def plot_prediction(image, outputs, name):
+def plot_prediction(image, outputs, name, output_dir):
     height = image.shape[1]
     width = image.shape[2]
     image = ((image-image.min()) / (image.max() -
@@ -50,10 +50,10 @@ def plot_prediction(image, outputs, name):
             ]
 
         final_image = draw_bounding_boxes(
-            image, boxes, box_labels, colors="red")
+            image, boxes, box_labels, colors="blue")
     else:
         final_image = image.cpu()
     r, g, b = list(final_image)
     cv2.imwrite(
-        str(Path("/home/tan8clj/images/outputs") / f"{name}"), torch.stack([r, g, b], axis=-1).numpy())
+        str(Path(output_dir) / f"{name}"), torch.stack([b, g, r], axis=-1).numpy())
     print("Image plotted successfully!")

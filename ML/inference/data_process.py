@@ -17,8 +17,10 @@ class PreprocessData:
     def preprocess_image(self, image_path : str):
         initial_image = cv2.imread(image_path, -1)
         if initial_image.shape[-1] == 4:
-            image = cv2.cvtColor(initial_image, cv2.COLOR_RGBA2RGB)
+            # print("4 channels")
+            image = cv2.cvtColor(initial_image, cv2.COLOR_BGRA2RGB)
         else:
+            # print("3 channels")
             image = cv2.cvtColor(initial_image, cv2.COLOR_BGR2RGB)
         return self.transform_imgs(image).to(device=self.device)
     
