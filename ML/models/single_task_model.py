@@ -31,4 +31,9 @@ class SingleTaskModel(nn.Module):
             the output of the entire model
         """
         backbone_out = self.backbone(inputs)
+        if inputs.shape[0] == 1:
+            h, w = inputs.shape[2:]
+            h0=h//14
+            w0=w//14
+            return self.head(backbone_out, h0=h0, w0=w0)
         return self.head(backbone_out)

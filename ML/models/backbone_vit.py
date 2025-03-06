@@ -45,6 +45,7 @@ class BackboneViT(torch.nn.Module):
         return model_output["x_norm_clstoken"]
 
     def load_state_dict(self, state_dict, *args, **kwargs):
+        print("Loading backbone..")
         def _process_weights(new_weights, old_weights):
             if "pos_embed" in new_weights and "pos_embed" in old_weights:
                 if new_weights["pos_embed"].shape != old_weights["pos_embed"].shape:

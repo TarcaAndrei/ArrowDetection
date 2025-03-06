@@ -43,7 +43,7 @@ class DETR(nn.Module):
         self.patch_size = patch_size
         self.resnet_backbone = resnet_backbone
 
-    def forward(self, backbone_outputs: torch.Tensor) -> dict[str, torch.Tensor]:
+    def forward(self, backbone_outputs: torch.Tensor, h0: int | None = None, w0: int | None = None) -> dict[str, torch.Tensor]:
         """ 
         Args:
             backbone_outputs: a tensor representing the results from the backbone part
@@ -58,7 +58,7 @@ class DETR(nn.Module):
                - "aux_outputs": Optional, only returned when auxilary losses are activated. It is a list of
                                 dictionnaries containing the two above keys for each decoder layer.
         """
-        hs = self._forward_transformer(backbone_outputs)
+        hs = self._forward_transformer(backbone_outputs, h0=h0, w0=w0)
         outputs_class = self.class_embed(hs)
         outputs_coord = self.bbox_embed(hs).sigmoid()
         out = {
@@ -70,7 +70,7 @@ class DETR(nn.Module):
                 outputs_class, outputs_coord)
         return out
 
-    def _forward_transformer(self, backbone_outputs: torch.Tensor) -> torch.Tensor:
+    def _forward_transformer(self, backbone_outputs: torch.Tensor, h0: int | None = None, w0: int | None = None) -> torch.Tensor:
         """
         Function that forwards the backbone outputs through the transformer part
         Args:
@@ -83,12 +83,13 @@ class DETR(nn.Module):
             src, mask = features[-1].decompose()
             assert mask is not None
             hs = self.transformer(self.input_proj(src), mask,
-                                self.query_embed.weight, pos[-1])[0]
+                                  self.query_embed.weight, pos[-1])[0]
             return hs
         backbone_outputs = backbone_outputs.permute(0, 2, 1).contiguous()
         # we want the tokens to be that
-        h0 = self.initial_height // self.patch_size
-        w0 = self.initial_width // self.patch_size
+        if h0 is None and w0 is None:
+            h0 = self.initial_height // self.patch_size
+            w0 = self.initial_width // self.patch_size
         src = backbone_outputs.reshape(-1, self.num_channels, h0, w0)
         pos = None
         b, _, h, w = src.shape

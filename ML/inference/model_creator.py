@@ -38,13 +38,18 @@ def build_inference_model(weights: str, device: torch.device, model_type: str = 
         patch_tokens=True,
         patch_size=14,
         init_values=1e-5,
-        img_size=(518, 1666)
+        img_size=(518, 518)
 
     )
     model = SingleTaskModel(backbone_vit, head, freeze_backbone=True)
     model.to(device)
-    model.load_state_dict(torch.load(
-        weights, map_location=device))
+    state_dict = torch.load(weights, map_location=device)
+    backbone_weights = {k.replace("backbone.vit.", ""): v for k, v in state_dict.items() if k.startswith("backbone.vit.")}
+    head_weights = {k.replace("head.", ""): v for k, v in state_dict.items() if k.startswith("head")}
+    model.backbone.load_state_dict(backbone_weights)
+    model.head.load_state_dict(head_weights)
+    # model.load_state_dict(torch.load(
+    #     weights, map_location=device))
     print("Model loaded successfully!")
     model.eval()
     return model

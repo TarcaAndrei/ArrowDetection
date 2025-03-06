@@ -50,7 +50,7 @@ def plot_prediction(image, outputs, name, output_dir):
             ]
 
         final_image = draw_bounding_boxes(
-            image, boxes, box_labels, colors="blue")
+            image, boxes, box_labels, colors="red")
     else:
         final_image = image.cpu()
     r, g, b = list(final_image)
