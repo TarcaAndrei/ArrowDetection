@@ -30,8 +30,10 @@ class InferencePipeline:
         duration = total_frames_initial // fps_initial if fps_initial > 0 else 0
         print(f"Duration: {duration} ---- FPS: {fps_initial}")
         every_frame = fps_initial // fps_final
-        output_video_path = "output_video.mp4"
+        output_video_path = "/teamspace/studios/this_studio/videos/output_video.mp4"
         fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+        # fourcc = cv2.VideoWriter_fourcc(*'H264')
+        fourcc = cv2.VideoWriter_fourcc(*'avc1') # we need this to display video in browser
         out = cv2.VideoWriter(output_video_path, fourcc,
                               fps_final, (end_width, end_height))
         frame_count = 0
@@ -78,6 +80,7 @@ class InferencePipeline:
                         img, tmp_out, save=False, confidenta=confidenta, clase_interes=clase_interes)
                     out.write(returned_frame)
         out.release()
+        return output_video_path
 
     def folder_inference(self, folder_name, output_dir, batch_size=32, end_height=812, end_width=1750, confidenta=0.0, clase_interes=label_decoder.keys()):
         all_imgs = os.listdir(folder_name)
@@ -112,12 +115,23 @@ class InferencePipeline:
                                           clase_interes=clase_interes, confidenta=confidenta)
             print("Image plotted!")
 
+    def predict_one_image(self, image, end_height=812, end_width=1750, confidenta=0.0, clase_interes=label_decoder.keys()):
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        image, preprocessed_img = self.data_preprocessing.preprocess_sequences([image], end_height, end_width)
+        # initial_image, preprocessed_image = self.data_preprocessing.preprocess_batch_images(input_folder, [image_name], end_height=end_height, end_width=end_width)
+        with torch.inference_mode():
+            outputs = self.model(preprocessed_img)
+            img_with_bbox = plot_frame_prediction(image[0], outputs, save=False, clase_interes=clase_interes, confidenta=confidenta)
+            print("Image plotted!")
+        return img_with_bbox
+
+
 if __name__ == "__main__":
     start_time = time.time()
     device = torch.device("cpu")
     if torch.cuda.is_available():
         device = torch.device("cuda")
-    weights = "weights.pth"
+    weights = "/teamspace/studios/this_studio/weights/model_base.pth"
     inference = InferencePipeline(
         weights=weights, device=device, model_type="base")
     clase_de_interes = label_decoder.keys()
