@@ -1,2 +1,2 @@
-from .inference_pipeline import Inference
-from .video_inference import VideoInference
+from .inference_pipeline import InferencePipeline
+from .clase import label_decoder

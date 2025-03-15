@@ -28,6 +28,7 @@ class PreprocessData:
         else:
             # print("3 channels")
             image = cv2.cvtColor(initial_image, cv2.COLOR_BGR2RGB)
+        initial_image = image
         height, width = image.shape[:2]
         image = self.pre_transform(image)
         mod_height = 14 - height % 14
@@ -37,7 +38,7 @@ class PreprocessData:
             ])
         image = transformation(image)
         # image = F.adjust_contrast(image, 1.0)
-        return self.post_transform(image).to(device=self.device)
+        return initial_image, self.post_transform(image).to(device=self.device)
 
     def preprocess_batch_images(self, root_folder, image_list, start_height=0, end_height=812, start_width=0, end_width=1750):
         all_images = []

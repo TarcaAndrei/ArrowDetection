@@ -62,6 +62,7 @@ def plot_prediction(image, outputs, name, output_dir):
 
 
 def plot_frame_prediction(image, outputs, name=None, output_dir=None, save=True, confidenta=0.0, clase_interes=label_decoder.keys()):
+    clase_interes = list(clase_interes)
     image = torch.tensor(image)
     image = image.permute(2, 0, 1)
     height = image.shape[1]
