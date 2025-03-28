@@ -63,6 +63,7 @@ def plot_prediction(image, outputs, name, output_dir):
 
 def plot_frame_prediction(image, outputs, name=None, output_dir=None, save=True, confidenta=0.0, clase_interes=label_decoder.keys()):
     clase_interes = list(clase_interes)
+    toate_predictiile = []
     image = torch.tensor(image)
     image = image.permute(2, 0, 1)
     height = image.shape[1]
@@ -109,6 +110,11 @@ def plot_frame_prediction(image, outputs, name=None, output_dir=None, save=True,
             colors_bbox = [
                 color_skeme[class_id.item()] for class_id in class_ids
             ]
+        toate_predictiile = [
+            {
+                "class": cls_prezis, "bounding_box": bbox_prezis.to(dtype=int).tolist()
+            } for cls_prezis, bbox_prezis in zip(box_labels, boxes)
+        ]
 
         final_image = draw_bounding_boxes(
             image, boxes, box_labels, colors=colors_bbox)
@@ -118,6 +124,6 @@ def plot_frame_prediction(image, outputs, name=None, output_dir=None, save=True,
     if save:
         cv2.imwrite(
             str(Path(output_dir) / f"{name}.jpg"), torch.stack([b, g, r], axis=-1).numpy())
-    else:
-        return torch.stack([b, g, r], axis=-1).numpy()
+    # else:
+    return torch.stack([b, g, r], axis=-1).numpy(), toate_predictiile
     # print("Image plotted successfully! " )

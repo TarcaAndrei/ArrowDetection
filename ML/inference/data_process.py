@@ -31,10 +31,11 @@ class PreprocessData:
         initial_image = image
         height, width = image.shape[:2]
         image = self.pre_transform(image)
-        mod_height = 14 - height % 14
-        mod_width = 14 - width % 14
+        # mod_height = 14 - height % 14
+        # mod_width = 14 - width % 14
         transformation = v2.Compose([
-            v2.Pad(padding=[0, 0, mod_width, mod_height])
+            # v2.Pad(padding=[0, 0, mod_width, mod_height])
+            v2.Resize((518, 1666))
             ])
         image = transformation(image)
         # image = F.adjust_contrast(image, 1.0)
@@ -55,16 +56,17 @@ class PreprocessData:
             all_images.append(image)
             initial_images.append(image)
         height, width = all_images[0].shape[:2]
-        mod_height = 14 - height % 14
-        if mod_height == 14:
-            mod_height = 0
-        mod_width = 14 - width % 14
-        if mod_width == 14:
-            mod_width = 0
+        # mod_height = 14 - height % 14
+        # if mod_height == 14:
+        #     mod_height = 0
+        # mod_width = 14 - width % 14
+        # if mod_width == 14:
+        #     mod_width = 0
 
         all_images = self.pre_transform(all_images)
         transformation = v2.Compose([
-            v2.Pad(padding=[0, 0, mod_width, mod_height])
+            # v2.Pad(padding=[0, 0, mod_width, mod_height])
+            v2.Resize((518, 1666))
             ])
         all_images = transformation(all_images)
         return initial_images, torch.stack(self.post_transform(all_images)).to(device=self.device)
@@ -77,16 +79,17 @@ class PreprocessData:
             all_images.append(image)
             initial_images.append(image)
         height, width = all_images[0].shape[:2]
-        mod_height = 14 - height % 14
-        if mod_height == 14:
-            mod_height = 0
-        mod_width = 14 - width % 14
-        if mod_width == 14:
-            mod_width = 0
+        # mod_height = 14 - height % 14
+        # if mod_height == 14:
+        #     mod_height = 0
+        # mod_width = 14 - width % 14
+        # if mod_width == 14:
+        #     mod_width = 0
 
         all_images = self.pre_transform(all_images)
         transformation = v2.Compose([
-            v2.Pad(padding=[0, 0, mod_width, mod_height])
+            # v2.Pad(padding=[0, 0, mod_width, mod_height])
+            v2.Resize((518, 1666))
             ])
         all_images = transformation(all_images)
         return initial_images, torch.stack(self.post_transform(all_images)).to(device=self.device)
