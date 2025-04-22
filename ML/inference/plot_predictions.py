@@ -21,6 +21,18 @@ color_skeme = {
     9: 'blue',
 }
 
+color_skeme = {
+    0: 'black',  # turn around
+    1: 'crimson',   # left
+    2: 'orange',   # left right
+    3: 'tomato',   # right
+    4: 'brown',  # slight left
+    5: 'brown',  # slight right
+    6: 'royalblue',  # straight left right
+    7: 'mediumblue',  # straight
+    8: 'teal',  # straight left
+    9: 'darkcyan',  # straight right
+}
 
 def plot_prediction(image, outputs, name, output_dir):
     height = image.shape[1]
@@ -117,7 +129,8 @@ def plot_frame_prediction(image, outputs, name=None, output_dir=None, save=True,
         ]
 
         final_image = draw_bounding_boxes(
-            image, boxes, box_labels, colors=colors_bbox)
+            image, boxes, box_labels, colors=colors_bbox,  font="/teamspace/studios/this_studio/ArrowDetection/ML/inference/OpenSans_Condensed-Medium.ttf", font_size=40, width=5)
+            # daca crapa ii de aici :))))))
     else:
         final_image = image.cpu()
     r, g, b = list(final_image)

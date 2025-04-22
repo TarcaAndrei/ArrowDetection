@@ -21,7 +21,7 @@ class InferencePipeline:
         self.device = device
         self.data_preprocessing = PreprocessData(device=device)
 
-    def video_inference(self, video_name, fps_final=15, batch_size=32, end_height=812, end_width=1750, confidenta=0.0, clase_interes=label_decoder.keys(), model_type="small"):
+    def video_inference(self, video_name, fps_final=15, batch_size=32, confidenta=0.0, clase_interes=label_decoder.keys(), model_type="small"):
         model_inference = self.small_model
         if model_type == "base":
             model_inference = self.base_model
@@ -39,9 +39,10 @@ class InferencePipeline:
         output_video_path = "/teamspace/studios/this_studio/inferences/output_video.mp4"
         fourcc = cv2.VideoWriter_fourcc(*'mp4v')
         # fourcc = cv2.VideoWriter_fourcc(*'H264')
-        # fourcc = cv2.VideoWriter_fourcc(*'avc1') # we need this to display video in browser
+        # fourcc = cv2.VideoWriter_fourcc(*'avc1') # we need this to display video in browser - idk why it doesnt work but anyway
         out = cv2.VideoWriter(output_video_path, fourcc,
-                              fps_final, (end_width, end_height))
+                              fps_final, (width, height))
+        print(f"FPS:{fps_final}")
         frame_count = 0
         frame_list = []
         predicted_labels = {}
@@ -58,7 +59,7 @@ class InferencePipeline:
                 if len(frame_list) == batch_size:
                     numar_ploturi += 1
                     init_imgs, preprocessed_imgs = self.data_preprocessing.preprocess_sequences(
-                        frame_list, end_height, end_width)
+                        frame_list)
                     with torch.inference_mode():
                         outputs = model_inference(preprocessed_imgs)
                         for (img, pred_box, pred_log) in zip(init_imgs, outputs["pred_boxes"], outputs["pred_logits"]):
@@ -80,7 +81,7 @@ class InferencePipeline:
         cap.release()
         if len(frame_list) > 0:
             init_imgs, preprocessed_imgs = self.data_preprocessing.preprocess_sequences(
-                frame_list, end_height, end_width)
+                frame_list)
             with torch.inference_mode():
                 outputs = model_inference(preprocessed_imgs)
                 for (img, pred_box, pred_log) in zip(init_imgs, outputs["pred_boxes"], outputs["pred_logits"]):
@@ -92,6 +93,7 @@ class InferencePipeline:
                         img, tmp_out, save=False, confidenta=confidenta, clase_interes=clase_interes)
                     predicted_labels[f"Frame_{numar_imagini_rulate}"] = predictii
                     inferenced_images[f"Frame_{numar_imagini_rulate}"] = img
+                    numar_imagini_rulate += 1
                     out.write(returned_frame)
         out.release()
         if True:
@@ -144,21 +146,21 @@ class InferencePipeline:
             print(f"Plotted a batch of images!")
 
 
-    def one_image_inference(self, input_folder, image_name, output_dir, end_height=812, end_width=1750, confidenta=0.0, clase_interes=label_decoder.keys()):
+    def one_image_inference(self, input_folder, image_name, output_dir, confidenta=0.0, clase_interes=label_decoder.keys()):
         os.makedirs(output_dir, exist_ok=True)
-        initial_image, preprocessed_image = self.data_preprocessing.preprocess_batch_images(input_folder, [image_name], end_height=end_height, end_width=end_width)
+        initial_image, preprocessed_image = self.data_preprocessing.preprocess_batch_images(input_folder, [image_name])
         with torch.inference_mode():
             outputs = self.model(preprocessed_image)
             plot_frame_prediction(initial_image[0], outputs, f"Inf_{image_name}", output_dir=output_dir, save=True,
                                           clase_interes=clase_interes, confidenta=confidenta)
             print("Image plotted!")
 
-    def predict_one_image(self, image, end_height=812, end_width=1750, confidenta=0.0, clase_interes=label_decoder.keys(), model_type="small"):
+    def predict_one_image(self, image, confidenta=0.0, clase_interes=label_decoder.keys(), model_type="small"):
         model_inference = self.small_model
         if model_type == "base":
             model_inference = self.base_model
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        image, preprocessed_img = self.data_preprocessing.preprocess_sequences([image], end_height, end_width)
+        image, preprocessed_img = self.data_preprocessing.preprocess_sequences([image])
         # initial_image, preprocessed_image = self.data_preprocessing.preprocess_batch_images(input_folder, [image_name], end_height=end_height, end_width=end_width)
         with torch.inference_mode():
             outputs = model_inference(preprocessed_img)
