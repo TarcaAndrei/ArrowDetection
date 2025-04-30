@@ -47,20 +47,27 @@ async def detect_objects_image(
     clase_interes = [inverse_decoder[k] for k in clase_interes]
 
     # Process the image
-    output_image, predicted_labels = inference_pipeline.predict_one_image(
+    output_image, json_path_labels = inference_pipeline.predict_one_image(
         image=img,  # Pass the NumPy array directly to the pipeline
         confidenta=float(confidenta_model),
         clase_interes=clase_interes,
         model_type=model_selector
     )
+    output_image = cv2.cvtColor(output_image, cv2.COLOR_BGR2RGB)
 
     # Convert the output image to a format suitable for saving (PIL or NumPy array to image)
     output_image_path = "/tmp/output_image.png"
     output_image_pil = Image.fromarray(output_image)  # Assuming the output is a NumPy array
     output_image_pil.save(output_image_path)
 
+    zip_output_path = "/tmp/output_files.zip"
+    with zipfile.ZipFile(zip_output_path, 'w') as zipf:
+        zipf.write(output_image_path, arcname="output_image.png")  # Add the video file to the zip
+        zipf.write(json_path_labels, arcname="output_img.json")  # Add the zip file to the zip
+
     # Return the processed image as a downloadable file
-    return FileResponse(output_image_path, media_type="image/png", filename="output_image.png")
+    # return FileResponse(output_image_path, media_type="image/png", filename="output_image.png")
+    return FileResponse(zip_output_path, media_type="application/zip", filename="output_files.zip")
 
 
 # Video Detection Endpoint
@@ -85,7 +92,7 @@ async def detect_objects_video(
     # Process the video
     video_displayed, zip_path = inference_pipeline.video_inference(
         video_name=video_path,
-        batch_size=128,
+        batch_size=64,
         fps_final=fps,
         confidenta=float(confidenta_model),
         clase_interes=clase_interes,

@@ -71,6 +71,8 @@ class InferencePipeline:
                                 img, tmp_out, save=False, confidenta=confidenta, clase_interes=clase_interes)
                             predicted_labels[f"Frame_{numar_imagini_rulate}"] = predictii
                             inferenced_images[f"Frame_{numar_imagini_rulate}"] = img
+                            # returned_frame = cv2.cvtColor(returned_frame, cv2.COLOR_BGR2RGB)
+                            # inferenced_images[f"Frame_{numar_imagini_rulate}"] = returned_frame
                             numar_imagini_rulate += 1
                             out.write(returned_frame)
                         print(f"Plotted a batch of images...{numar_ploturi}")
@@ -93,6 +95,8 @@ class InferencePipeline:
                         img, tmp_out, save=False, confidenta=confidenta, clase_interes=clase_interes)
                     predicted_labels[f"Frame_{numar_imagini_rulate}"] = predictii
                     inferenced_images[f"Frame_{numar_imagini_rulate}"] = img
+                    # returned_frame = cv2.cvtColor(returned_frame, cv2.COLOR_BGR2RGB)
+                    # inferenced_images[f"Frame_{numar_imagini_rulate}"] = returned_frame
                     numar_imagini_rulate += 1
                     out.write(returned_frame)
         out.release()
